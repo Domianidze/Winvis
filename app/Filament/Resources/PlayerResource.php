@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PlayerResource\Pages;
 use App\Models\Player;
 use Filament\Forms;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -21,7 +20,7 @@ class PlayerResource extends Resource
     {
         return $form
             ->schema([
-                SpatieMediaLibraryFileUpload::make('avatar')
+                Forms\Components\SpatieMediaLibraryFileUpload::make('avatar')
                     ->collection('players')
                     ->avatar()
                     ->imageEditor()

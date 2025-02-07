@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('cover')->nullable();
-            $table->json('finishes')->nullable();
+            $table->json('finish_types')->nullable();
             $table->timestamps();
         });
     }
