@@ -20,29 +20,30 @@ class GameResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\SpatieMediaLibraryFileUpload::make('cover')
-                    ->collection('games')
-                    ->image()
-                    ->imageResizeMode('cover')
-                    ->imageResizeUpscale(false)
-                    ->imageCropAspectRatio('16:9')
-                    ->imageResizeTargetHeight('1080')
-                    ->imageResizeTargetWidth('1920')
-                    ->imagePreviewHeight('250')
-                    ->imageEditor()
-                    ->maxSize(1024 * 25),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Repeater::make('finish_types')
-                    ->schema([
-                        Forms\Components\TextInput::make('finish')
-                            ->required()
-                            ->maxLength(255),
-                    ])
-                    ->defaultItems(0),
-            ])
-            ->columns(1);
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\SpatieMediaLibraryFileUpload::make('cover')
+                        ->collection('games')
+                        ->image()
+                        ->imageResizeMode('cover')
+                        ->imageResizeUpscale(false)
+                        ->imageCropAspectRatio('16:9')
+                        ->imageResizeTargetHeight('1080')
+                        ->imageResizeTargetWidth('1920')
+                        ->imagePreviewHeight('250')
+                        ->imageEditor()
+                        ->maxSize(1024 * 25),
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->maxLength(255),
+                    Forms\Components\Repeater::make('finish_types')
+                        ->schema([
+                            Forms\Components\TextInput::make('finish')
+                                ->required()
+                                ->maxLength(255),
+                        ])
+                        ->defaultItems(0),
+                ])
+            ]);
     }
 
     public static function table(Table $table): Table

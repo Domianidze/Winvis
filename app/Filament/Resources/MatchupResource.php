@@ -3,15 +3,16 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MatchupResource\Pages;
-use App\Filament\Resources\MatchupResource\RelationManagers;
+use App\Models\Game;
 use App\Models\Matchup;
+use App\Models\Player;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
 
 class MatchupResource extends Resource
 {
@@ -23,17 +24,58 @@ class MatchupResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('player1_score')
-                    ->numeric(),
-                Forms\Components\TextInput::make('player2_score')
-                    ->numeric(),
-                Forms\Components\TextInput::make('finish_type')
-                    ->maxLength(255),
-                Forms\Components\Select::make('winner_id')
-                    ->relationship('winner', 'name'),
-                Forms\Components\Select::make('game_id')
-                    ->relationship('game', 'name')
-                    ->required(),
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\Select::make('game_id')
+                        ->relationship('game', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->live()
+                        ->required(),
+                    Forms\Components\Select::make('players')
+                        ->relationship('players', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->multiple()
+                        ->live()
+                        ->minItems(2)
+                        ->maxItems(2)
+                        ->required(),
+                    Forms\Components\Select::make('winner_id')
+                        ->label('Winner')
+                        ->options(fn(Get $get): Collection => Player::whereIn('id', $get('players'))->pluck('name', 'id'))
+                        ->searchable()
+                        ->disabled(fn(Get $get): bool => !$get('players'))
+                        ->required(),
+                    Forms\Components\Select::make('finish_type')
+                        ->options(function (Get $get): array {
+                            $game = Game::find($get('game_id'));
+
+                            if (!$game) {
+                                return [];
+                            };
+
+                            return array_map(fn($item) => $item['finish'], $game->finish_types);
+                        })
+                        ->searchable()
+                        ->live()
+                        ->disabled(fn(Get $get): bool => !$get('game_id')),
+                    Forms\Components\Fieldset::make('Score')
+                        ->schema([
+                            ...collect([1, 2])->map(
+                                function (int $player) {
+                                    $required = fn(Get $get): bool => $get('finish_type') === null;
+
+                                    return Forms\Components\TextInput::make("player{$player}_score")
+                                        ->hiddenLabel()
+                                        ->numeric()
+                                        ->default(0)
+                                        ->dehydrated($required)
+                                        ->required($required);
+                                }
+                            )->all()
+                        ])
+                        ->disabled(fn(Get $get): bool => $get('finish_type') !== null),
+                ])
             ]);
     }
 

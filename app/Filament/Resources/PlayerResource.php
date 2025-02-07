@@ -20,15 +20,16 @@ class PlayerResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\SpatieMediaLibraryFileUpload::make('avatar')
-                    ->collection('players')
-                    ->avatar()
-                    ->imageEditor()
-                    ->maxSize(1024 * 10)
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255)
+                Forms\Components\Section::make()->schema([
+                    Forms\Components\SpatieMediaLibraryFileUpload::make('avatar')
+                        ->collection('players')
+                        ->avatar()
+                        ->imageEditor()
+                        ->maxSize(1024 * 10),
+                    Forms\Components\TextInput::make('name')
+                        ->required()
+                        ->maxLength(255)
+                ])
             ]);
     }
 
