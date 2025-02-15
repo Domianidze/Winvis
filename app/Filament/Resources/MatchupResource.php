@@ -10,6 +10,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Collection;
@@ -47,14 +48,15 @@ class MatchupResource extends Resource
                         ->disabled(fn(Get $get): bool => !$get('players'))
                         ->required(),
                     Forms\Components\Select::make('finish_type')
-                        ->options(function (Get $get): array {
+                        ->options(function (Get $get): Collection {
                             $game = Game::find($get('game_id'));
 
                             if (!$game) {
-                                return [];
-                            };
+                                return collect();
+                            }
 
-                            return array_map(fn($item) => $item['finish'], $game->finish_types);
+                            return collect($game->finish_types)
+                                ->mapWithKeys(fn($finish): array => [$finish['finish'] => $finish['finish']]);
                         })
                         ->searchable()
                         ->live()
@@ -83,20 +85,22 @@ class MatchupResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('player1_score')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('player2_score')
-                    ->numeric()
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('game.thumbnail')
+                    ->collection('games'),
+                Tables\Columns\TextColumn::make('winner.name')
+                    ->icon('heroicon-o-trophy')
+                    ->iconColor(Color::Amber)
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('finish_type')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('winner.name')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('game.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Finish')
+                    ->placeholder('Regulation'),
+                Tables\Columns\TextColumn::make('player1_score')
+                    ->label('Score')
+                    ->placeholder('N/A')
+                    ->formatStateUsing(function (Matchup $matchup): string {
+                        return $matchup->player1_score . ' - ' . $matchup->player2_score;
+                    }),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -107,7 +111,31 @@ class MatchupResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('game')
+                    ->relationship('game', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->multiple(),
+                Tables\Filters\SelectFilter::make('winner')
+                    ->relationship('winner', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->multiple(),
+                Tables\Filters\TernaryFilter::make('player1_score')
+                    ->label('Regulation')
+                    ->nullable(),
+                Tables\Filters\SelectFilter::make('finish_type')
+                    ->label('Finish')
+                    ->options(
+                        fn(): Collection => Game::all()
+                            ->pluck('finish_types')
+                            ->flatten()
+                            ->unique()
+                            ->mapWithKeys(fn($finish): array => [$finish => $finish])
+                    )
+                    ->searchable()
+                    ->preload()
+                    ->multiple(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
