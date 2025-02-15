@@ -21,7 +21,7 @@ class GameResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Section::make()->schema([
-                    Forms\Components\SpatieMediaLibraryFileUpload::make('cover')
+                    Forms\Components\SpatieMediaLibraryFileUpload::make('thumbnail')
                         ->collection('games')
                         ->image()
                         ->imageResizeMode('cover')
@@ -50,10 +50,11 @@ class GameResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\SpatieMediaLibraryImageColumn::make('thumbnail')
+                    ->collection('games'),
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('cover')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
