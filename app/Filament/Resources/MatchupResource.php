@@ -9,6 +9,9 @@ use App\Models\Player;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
+use Filament\Infolists;
+use Filament\Infolists\Components\TextEntry\TextEntrySize;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
@@ -138,13 +141,57 @@ class MatchupResource extends Resource
                     ->multiple(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->slideOver(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema(fn(Matchup $matchup): array => [
+                Infolists\Components\TextEntry::make('game.name'),
+                Infolists\Components\RepeatableEntry::make('players')
+                    ->schema([
+                        Infolists\Components\SpatieMediaLibraryImageEntry::make('avatar')
+                            ->collection('players')
+                            ->hiddenLabel()
+                            ->circular(),
+                        Infolists\Components\TextEntry::make('name')
+                            ->icon(fn(Player $player): string|null => $matchup->winner_id === $player->id ? 'heroicon-o-trophy' : null)
+                            ->iconColor(Color::Amber)
+                            ->hiddenLabel()
+                            ->size(TextEntrySize::Large),
+                    ])
+                    ->grid(2),
+                Infolists\Components\TextEntry::make('finish_type')
+                    ->placeholder('Regulation'),
+                Infolists\Components\Group::make([
+                    Infolists\Components\TextEntry::make('score')
+                        ->hiddenLabel()
+                        ->getStateUsing(fn(): string => 'Score')
+                        ->columnSpanFull(),
+                    ...collect([1, 2])->map(
+                        function (int $player) {
+                            return Infolists\Components\Section::make()
+                                ->schema([
+                                    Infolists\Components\TextEntry::make("player{$player}_score")
+                                        ->hiddenLabel()
+                                        ->size(TextEntrySize::Large)
+                                ])
+                                ->columnSpan(1);
+                        }
+                    )->all()
+                ])
+                    ->columns(2)
+                    ->visible(fn(): bool => !$matchup->finish_type)
+            ])
+            ->columns(1);
     }
 
     public static function getRelations(): array
@@ -159,7 +206,7 @@ class MatchupResource extends Resource
         return [
             'index' => Pages\ListMatchups::route('/'),
             'create' => Pages\CreateMatchup::route('/create'),
-            'edit' => Pages\EditMatchup::route('/{record}/edit'),
+            'view' => Pages\ViewMatchup::route('/{record}'),
         ];
     }
 }
