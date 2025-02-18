@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PlayerResource\Pages;
+use App\Filament\Resources\PlayerResource\RelationManagers\MatchupsRelationManager;
 use App\Models\Player;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -89,7 +90,7 @@ class PlayerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MatchupsRelationManager::class
         ];
     }
 
