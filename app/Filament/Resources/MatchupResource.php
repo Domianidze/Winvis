@@ -155,43 +155,47 @@ class MatchupResource extends Resource
     {
         return $infolist
             ->schema(fn(Matchup $matchup): array => [
-                Infolists\Components\TextEntry::make('game.name'),
-                Infolists\Components\RepeatableEntry::make('players')
-                    ->schema([
-                        Infolists\Components\SpatieMediaLibraryImageEntry::make('avatar')
-                            ->collection('players')
-                            ->hiddenLabel()
-                            ->circular(),
-                        Infolists\Components\TextEntry::make('name')
-                            ->icon(fn(Player $player): string|null => $matchup->winner_id === $player->id ? 'heroicon-o-trophy' : null)
-                            ->iconColor(Color::Amber)
-                            ->hiddenLabel()
-                            ->size(TextEntrySize::Large),
-                    ])
-                    ->grid(2),
-                Infolists\Components\TextEntry::make('finish_type')
-                    ->placeholder('Regulation'),
-                Infolists\Components\Group::make([
-                    Infolists\Components\TextEntry::make('score')
-                        ->hiddenLabel()
-                        ->getStateUsing(fn(): string => 'Score')
+                Infolists\Components\Section::make()->schema([
+                    Infolists\Components\TextEntry::make('game.name')
+                        ->size(TextEntrySize::Large),
+                    Infolists\Components\RepeatableEntry::make('players')
+                        ->schema([
+                            Infolists\Components\SpatieMediaLibraryImageEntry::make('avatar')
+                                ->collection('players')
+                                ->hiddenLabel()
+                                ->circular(),
+                            Infolists\Components\TextEntry::make('name')
+                                ->icon(fn(Player $player): string|null => $matchup->winner_id === $player->id ? 'heroicon-o-trophy' : null)
+                                ->iconColor(Color::Amber)
+                                ->hiddenLabel()
+                                ->size(TextEntrySize::Large),
+                        ])
+                        ->grid(2)
                         ->columnSpanFull(),
-                    ...collect([1, 2])->map(
-                        function (int $player) {
-                            return Infolists\Components\Section::make()
-                                ->schema([
-                                    Infolists\Components\TextEntry::make("player{$player}_score")
-                                        ->hiddenLabel()
-                                        ->size(TextEntrySize::Large)
-                                ])
-                                ->columnSpan(1);
-                        }
-                    )->all()
+                    Infolists\Components\TextEntry::make('finish_type')
+                        ->placeholder('Regulation')
+                        ->size(TextEntrySize::Large),
+                    Infolists\Components\Group::make([
+                        Infolists\Components\TextEntry::make('score')
+                            ->hiddenLabel()
+                            ->getStateUsing(fn(): string => 'Score')
+                            ->columnSpanFull(),
+                        ...collect([1, 2])->map(
+                            function (int $player) {
+                                return Infolists\Components\Section::make()
+                                    ->schema([
+                                        Infolists\Components\TextEntry::make("player{$player}_score")
+                                            ->hiddenLabel()
+                                            ->size(TextEntrySize::Large)
+                                    ])
+                                    ->columnSpan(1);
+                            }
+                        )->all()
+                    ])
+                        ->columns(2)
+                        ->visible(fn(): bool => !$matchup->finish_type)
                 ])
-                    ->columns(2)
-                    ->visible(fn(): bool => !$matchup->finish_type)
-            ])
-            ->columns(1);
+            ]);
     }
 
     public static function getRelations(): array

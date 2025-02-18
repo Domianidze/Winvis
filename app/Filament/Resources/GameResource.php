@@ -6,6 +6,9 @@ use App\Filament\Resources\GameResource\Pages;
 use App\Models\Game;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Components\TextEntry\TextEntrySize;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -68,12 +71,36 @@ class GameResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->slideOver(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\SpatieMediaLibraryImageEntry::make('thumbnail')
+                            ->collection('games')
+                            ->hiddenLabel()
+                            ->height(200),
+                        Infolists\Components\TextEntry::make('name')
+                            ->hiddenLabel()
+                            ->size(TextEntrySize::Large),
+                        Infolists\Components\RepeatableEntry::make('finish_types')
+                            ->schema([
+                                Infolists\Components\TextEntry::make('finish')
+                                    ->hiddenLabel(),
+                            ])
+                            ->grid(4),
+                    ]),
             ]);
     }
 
@@ -89,7 +116,7 @@ class GameResource extends Resource
         return [
             'index' => Pages\ListGames::route('/'),
             'create' => Pages\CreateGame::route('/create'),
-            'edit' => Pages\EditGame::route('/{record}/edit'),
+            'view' => Pages\ViewGame::route('/{record}'),
         ];
     }
 }
