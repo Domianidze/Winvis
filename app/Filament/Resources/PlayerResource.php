@@ -6,6 +6,9 @@ use App\Filament\Resources\PlayerResource\Pages;
 use App\Models\Player;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists;
+use Filament\Infolists\Components\TextEntry\TextEntrySize;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -56,12 +59,30 @@ class PlayerResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->slideOver(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\Section::make()
+                    ->schema([
+                        Infolists\Components\SpatieMediaLibraryImageEntry::make('avatar')
+                            ->collection('players')
+                            ->circular()
+                            ->hiddenLabel(),
+                        Infolists\Components\TextEntry::make('name')
+                            ->hiddenLabel()
+                            ->size(TextEntrySize::Large),
+                    ])
             ]);
     }
 
@@ -77,7 +98,7 @@ class PlayerResource extends Resource
         return [
             'index' => Pages\ListPlayers::route('/'),
             'create' => Pages\CreatePlayer::route('/create'),
-            'edit' => Pages\EditPlayer::route('/{record}/edit'),
+            'view' => Pages\ViewPlayer::route('/{record}'),
         ];
     }
 }
