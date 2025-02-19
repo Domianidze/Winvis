@@ -2,13 +2,13 @@
     use App\Filament\Widgets\TopPerformerWidget;
 
     /** @var TopPerformerWidget $this */
-    $this;
+
 @endphp
 
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="flex flex-col items-center gap-4">
-            <div class="w-full flex justify-between items-center">
+            <div class="w-full h-9 flex justify-between items-center">
                 <h2 class="text-lg">Top Performer</h2>
                 <x-filament::input.wrapper>
                     <x-filament::input.select wire:model.live="game">
@@ -33,7 +33,6 @@
                     <p>{{ $this->topPerformer->wins }}</p>
                 </div>
             </div>
-
         </div>
     </x-filament::section>
 </x-filament-widgets::widget>

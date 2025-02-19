@@ -12,6 +12,8 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 class StartsOverviewWidget extends BaseWidget
 {
 
+    protected static ?int $sort = 1;
+
     protected function getStats(): array
     {
         return [

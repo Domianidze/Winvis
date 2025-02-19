@@ -12,6 +12,8 @@ class TopPerformerWidget extends Widget
 {
     protected static string $view = 'filament.widgets.top-performer-widget';
 
+    protected static ?int $sort = 2;
+
     public ?Collection $games = null;
 
     public ?int $game = null;
