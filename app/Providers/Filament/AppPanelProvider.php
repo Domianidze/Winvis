@@ -26,6 +26,7 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->login()
+            ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Red,
             ])
