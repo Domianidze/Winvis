@@ -17,13 +17,16 @@
                         src="{{ $player1->getFirstMediaUrl('players') }}"
                         size="size-32"
                     />
-                    <p>{{ $player1->name }}</p>
-                    @if ($player1->id === $this->matchup->winner_id)
-                        <x-filament::icon
-                            icon="heroicon-o-trophy"
-                            class="size-5 text-amber-500"
-                        />
-                    @endif
+                    <div class="flex items-center gap-1">
+                        <p>{{ $player1->name }}</p>
+                        @if ($player1->id === $this->matchup->winner_id)
+                            <x-filament::icon
+                                icon="heroicon-o-trophy"
+                                class="size-5 text-amber-500"
+                            />
+                        @endif
+                    </div>
+
                 </div>
                 <p class="pb-10 text-4xl">{{ $this->matchup->player1_score }}</p>
                 <div class="pb-10 text-sm text-center">
