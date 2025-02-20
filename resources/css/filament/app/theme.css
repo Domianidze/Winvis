@@ -1,3 +1,22 @@
 @import '/vendor/filament/filament/resources/css/theme.css';
 
 @config 'tailwind.config.js';
+
+/* General */
+.fi-global-search-result {
+    h4 {
+        @apply capitalize;
+    }
+}
+
+.fi-ta-image {
+    img:not(.rounded-full) {
+        @apply rounded;
+    }
+}
+
+.fi-in-image {
+    img:not(.rounded-full) {
+        @apply rounded-xl;
+    }
+}

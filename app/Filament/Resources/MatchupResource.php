@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class MatchupResource extends Resource
@@ -23,6 +24,19 @@ class MatchupResource extends Resource
     protected static ?string $model = Matchup::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-arrows-up-down';
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['game.name', 'players.name'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Game' => $record->game->name,
+            'Players' => $record->players->first()->name . ' vs ' . $record->players->last()->name,
+        ];
+    }
 
     public static function form(Form $form): Form
     {
