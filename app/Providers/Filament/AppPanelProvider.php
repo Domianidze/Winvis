@@ -29,13 +29,14 @@ class AppPanelProvider extends PanelProvider
             ->passwordReset()
             ->registration()
             ->emailVerification()
+            ->favicon(asset('images/logo.svg'))
             ->viteTheme('resources/css/filament/app/theme.css')
             ->colors([
                 'primary' => Color::Red,
             ])
             ->font('Kanit')
             ->brandName('Winvis')
-            ->favicon(asset('images/logo.svg'))
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([

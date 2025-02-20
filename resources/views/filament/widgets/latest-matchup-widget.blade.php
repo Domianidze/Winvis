@@ -11,12 +11,14 @@
     <x-filament::section>
         <div class="space-y-4">
             <h2 class="h-9 text-lg">Latest Match</h2>
-            <div class="flex justify-between items-center">
+            <div class="flex justify-between items-center gap-4">
                 <div class="flex flex-col gap-4 items-center">
-                    <x-filament::avatar
-                        src="{{ $player1->getFirstMediaUrl('players') }}"
-                        size="size-32"
-                    />
+                    <div class="h-32 flex items-center">
+                        <x-filament::avatar
+                            src="{{ $player1->getFirstMediaUrl('players') }}"
+                            size="w-32 object-contain"
+                        />
+                    </div>
                     <div class="flex items-center gap-1">
                         <p>{{ $player1->name }}</p>
                         @if ($player1->id === $this->matchup->winner_id)
@@ -26,20 +28,21 @@
                             />
                         @endif
                     </div>
-
                 </div>
-                <p class="pb-10 text-4xl">{{ $this->matchup->player1_score }}</p>
+                <p class="pb-10 text-2xl sm:text-4xl">{{ $this->matchup->player1_score }}</p>
                 <div class="pb-10 text-sm text-center">
                     <p>{{ $this->matchup->game->name }}</p>
                     <p class="py-4 text-red-400">vs</p>
                     <p class="text-gray-400">{{ $this->matchup->finish_type ?? 'Regulation' }}</p>
                 </div>
-                <p class="pb-10 text-4xl">{{ $this->matchup->player2_score }}</p>
+                <p class="pb-10 text-2xl sm:text-4xl">{{ $this->matchup->player2_score }}</p>
                 <div class="flex flex-col gap-4 items-center">
-                    <x-filament::avatar
-                        src="{{ $player2->getFirstMediaUrl('players') }}"
-                        size="size-32"
-                    />
+                    <div class="h-32 flex items-center">
+                        <x-filament::avatar
+                            src="{{ $player2->getFirstMediaUrl('players') }}"
+                            size="w-32"
+                        />
+                    </div>
                     <div class="flex items-center gap-1">
                         <p>{{ $player2->name }}</p>
                         @if ($player2->id === $this->matchup->winner_id)
