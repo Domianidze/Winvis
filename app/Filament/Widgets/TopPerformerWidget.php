@@ -23,7 +23,7 @@ class TopPerformerWidget extends Widget
         $this->games = Game::all();
     }
 
-    public function getTopPerformerProperty(): Player
+    public function getTopPerformerProperty(): ?Player
     {
         return Player
             ::withCount([

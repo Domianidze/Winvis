@@ -19,20 +19,24 @@
                     </x-filament::input.select>
                 </x-filament::input.wrapper>
             </div>
-            <x-filament::avatar
-                src="{{ $this->topPerformer->getFirstMediaUrl('players') }}"
-                size="size-32"
-            />
-            <div class="flex items-center gap-1">
-                <p>{{ $this->topPerformer->name }} - </p>
+            @if ($this->topPerformer && $this->topPerformer->wins > 0)
+                <x-filament::avatar
+                    src="{{ $this->topPerformer->getFirstMediaUrl('players') }}"
+                    size="size-32"
+                />
                 <div class="flex items-center gap-1">
-                    <x-filament::icon
-                        icon="heroicon-o-trophy"
-                        class="size-5 text-amber-500"
-                    />
-                    <p>{{ $this->topPerformer->wins }}</p>
+                    <p>{{ $this->topPerformer->name }} - </p>
+                    <div class="flex items-center gap-1">
+                        <x-filament::icon
+                            icon="heroicon-o-trophy"
+                            class="size-5 text-amber-500"
+                        />
+                        <p>{{ $this->topPerformer->wins }}</p>
+                    </div>
                 </div>
-            </div>
+            @else
+                <p>No performer found</p>
+            @endif
         </div>
     </x-filament::section>
 </x-filament-widgets::widget>
