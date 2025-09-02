@@ -12,7 +12,7 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <div class="space-y-4">
-            <h2 class="h-9 text-lg">Latest Match</h2>
+            <h2 class="h-9 text-lg">Latest Matchup</h2>
             @if ($this->matchup)
                 <div class="flex justify-between items-center gap-4">
                     <div class="flex flex-col gap-4 items-center">
